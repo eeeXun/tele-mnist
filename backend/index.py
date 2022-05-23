@@ -9,7 +9,7 @@ model = keras.models.load_model("model.h5")
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     img = request.files["img"].read()
     img = BytesIO(img)
@@ -20,7 +20,7 @@ def index():
     img_arr = np.expand_dims(img_arr, axis=0)
     result = np.argmax(model.predict(img_arr)[0])
 
-    return "{}".format(result)
+    return str(result)
 
 
 if __name__ == "__main__":
