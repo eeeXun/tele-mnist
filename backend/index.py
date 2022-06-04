@@ -1,35 +1,51 @@
 from flask import Flask, request
-from PIL import Image, ImageOps
-from io import BytesIO
 import numpy as np
 import keras
+import cv2
 
 
 class Mnist:
     def __init__(self):
         self.model = keras.models.load_model("model.h5")
 
-    def resize(self, img):
-        img = BytesIO(img)
-        img = Image.open(img).convert("L").resize((28, 28))
-        img = ImageOps.invert(img)
-        return img
+    def img_split(self, img):
+        result = []
+        img = cv2.imdecode(np.frombuffer(img, np.uint8), -1)
 
-    def normalize(self, img):
-        img_arr = np.array(img)
-        img_arr = img_arr.astype("float32") / 255.0
-        img_arr = np.expand_dims(img_arr, axis=0)
-        return img_arr
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        thresh = cv2.threshold(
+            gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
 
-    def img_process(self, img):
-        img = self.resize(img)
-        return self.normalize(img)
+        cnts = cv2.findContours(
+            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+        pos_list = []
+        for c in cnts:
+            x, y, w, h = cv2.boundingRect(c)
+            pos_list.append([x, y, w, h])
+        pos_list.sort(key=lambda s: s[0])
+        for i in pos_list:
+            x, y, w, h = i
+            digit = gray[y:y+h, x:x+w]
+            # resize
+            digit = (cv2.resize(digit, (28, 28)))
+            # invert
+            digit = 255 - digit
+            # normalize
+            digit = digit.astype("float32") / 255.0
+            digit = np.expand_dims(digit, axis=0)
+            result.append(digit)
+
+        return result
 
     def predict(self, img):
-        data = self.img_process(img)
-        result = np.argmax(self.model.predict(data)[0])
+        result = ""
+        proc_imgs = self.img_split(img)
+        for proc_img in proc_imgs:
+            result += str(np.argmax(self.model.predict(proc_img)[0]))
 
-        return str(result)
+        return result
 
 
 app = Flask(__name__)
