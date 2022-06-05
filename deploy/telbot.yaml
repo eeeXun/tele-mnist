@@ -4,6 +4,8 @@ metadata:
   name: telbot
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -18,6 +20,11 @@ spec:
                 secretKeyRef:
                   name: tel-secret
                   key: tel_token
+            - name: admin_ID
+              valueFrom:
+                secretKeyRef:
+                  name: tel-secret
+                  key: admin_ID
   selector:
     matchLabels:
       app: telbot
