@@ -35,7 +35,7 @@ class telbot:
         feedback= update.message['text']
         defult_host=self.host
         filename=str(update.message['chat']['first_name'])+".jpg"
-        with open("./tmp/"+filename,"rb") as f:
+        with open("./"+filename,"rb") as f:
             r=requests.post(defult_host,files={"img":f,"feedback":feedback})
             print(r.text)
         update.message.reply_text(text="Thank you for your feed back")
