@@ -42,10 +42,10 @@ class telbot:
 
 
     def set_host(self,bot,update):
-        if chat['id']==os.environ.get('admin_ID'):
-            message = update.message
-            newhost=update.message['text']
-            chat = message['chat']
+        message = update.message
+        newhost=update.message['text']
+        chat = message['chat']
+        if chat['id']==os.environ.get('admin_ID'):    
             print(str(chat['first_name'])+' '+str(chat['last_name'])+" setup new host as: ",newhost)
             self.host=newhost
             update.message.reply_text(text='new host is :'+str(self.host))
