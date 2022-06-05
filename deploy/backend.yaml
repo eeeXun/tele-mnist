@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mnist
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mnist
+    spec:
+      containers:
+        - name: mnist
+          image: eeexun/mnist
+          ports:
+            - name: http
+              containerPort: 5000
+  selector:
+    matchLabels:
+      app: mnist
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mnist
+spec:
+  type: LoadBalancer
+  selector:
+    app: mnist
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
