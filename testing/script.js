@@ -2,12 +2,18 @@ import http from "k6/http";
 import {sleep} from "k6";
 
 const img = open("test.png", "b");
-const url = "http://branko.lab.test.ncnu.org:5000"
+const url = "http://10.22.23.22:5000"
 const data = {
     img: http.file(img),
 };
 
+export let options = {
+    stages: [
+        {duration: '10m', target: 10},
+    ]
+};
+
 export default function() {
     http.post(url, data);
-    sleep(1);
+    sleep(5);
 }
