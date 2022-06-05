@@ -8,9 +8,8 @@ const data = {
 };
 
 export let options = {
-    stages: [
-        {duration: '10m', target: 10},
-    ]
+    vus: 10,
+    duration: "10m",
 };
 
 export default function() {
