@@ -18,7 +18,7 @@ spec:
                 secretKeyRef:
                   name: tel-secret
                   key: tel_token
-              name: admin_ID
+            - name: admin_ID
               valueFrom:
                 secretKeyRef:
                   name: tel-secret
