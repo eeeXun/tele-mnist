@@ -2,6 +2,7 @@ from flask import Flask, request
 import numpy as np
 import keras
 import cv2
+from PIL import Image, ImageOps
 
 
 class Mnist:
@@ -27,11 +28,13 @@ class Mnist:
         pos_list.sort(key=lambda s: s[0])
         for i in pos_list:
             x, y, w, h = i
-            digit = gray[y:y+h, x:x+w]
+            digit = thresh[y:y+h, x:x+w]
+            # border expand
+            im_type = Image.fromarray(digit)
+            img_with_border = ImageOps.expand(im_type, border=10, fill='black')
+            digit = np.array(img_with_border)
             # resize
             digit = (cv2.resize(digit, (28, 28)))
-            # invert
-            digit = 255 - digit
             # normalize
             digit = digit.astype("float32") / 255.0
             digit = np.expand_dims(digit, axis=0)
