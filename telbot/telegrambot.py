@@ -1,19 +1,23 @@
 from telegram.ext import *
 import telegram
 import requests
-import configparser
+#import configparser
+import os
+
 class telbot:
     def __init__(self):
         self.read_token()
-        self.host=None
+        self.host="10.22.23.22"
+
     def read_token(self):
-       self.config = configparser.ConfigParser()
-       self.config.read('config.ini')
+       #self.config = configparser.ConfigParser()
+       #self.config.read('config.ini')
+       self.token=os.environ.get('tel_token')
        
 
     def startbot(self):
         # 初始化bot
-        self.updater = Updater(token=self.config['TELBOT']['token'],use_context=False)
+        self.updater = Updater(token=self.token,use_context=False)
         self.dispatcher = self.updater.dispatcher
         self.dispatcher.add_handler(CommandHandler('hi', self.hi))
         self.dispatcher.add_handler(CommandHandler('set_host', self.set_host))
@@ -29,8 +33,7 @@ class telbot:
     def feedBack(self,bot,update):
         message = update.message
         feedback= update.message['text']
-        if self.host==None:
-            defult_host=self.config['Host']['ip']
+        defult_host=self.host
         filename=str(update.message['chat']['first_name'])+".jpg"
         with open("./tmp/"+filename,"rb") as f:
             r=requests.post(defult_host,files={"img":f,"feedback":feedback})
@@ -57,8 +60,8 @@ class telbot:
         filename=str(update.message['chat']['first_name'])+".jpg"
         path = file.download("./"+filename)
         #print(path)
-        if self.host==None:
-            defult_host=self.config['Host']['ip']
+
+        defult_host=self.host
         with open("./"+filename,"rb") as f:
             r=requests.post(defult_host,files={"img":f})
             print(r.text)

@@ -3,11 +3,10 @@ FROM python
 WORKDIR /telbot
 
 COPY telegrambot.py /telbot
-COPY config.ini /telbot
 COPY requirements.txt /telbot
 
 RUN pip3 install -r requirements.txt
 
-EXPOSE 5000
+
 
 ENTRYPOINT ["python3", "telegrambot.py"]
