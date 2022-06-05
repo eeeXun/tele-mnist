@@ -7,7 +7,7 @@ import os
 class telbot:
     def __init__(self):
         self.read_token()
-        self.host="10.22.23.22"
+        self.host="http://mnist:5000"
 
     def read_token(self):
        #self.config = configparser.ConfigParser()
