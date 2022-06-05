@@ -35,19 +35,22 @@ class telbot:
         feedback= update.message['text']
         defult_host=self.host
         filename=str(update.message['chat']['first_name'])+".jpg"
-        with open("./tmp/"+filename,"rb") as f:
+        with open("./"+filename,"rb") as f:
             r=requests.post(defult_host,files={"img":f,"feedback":feedback})
             print(r.text)
         update.message.reply_text(text="Thank you for your feed back")
 
 
     def set_host(self,bot,update):
-        message = update.message
-        newhost=update.message['text']
-        chat = message['chat']
-        print(str(chat['first_name'])+' '+str(chat['last_name'])+" setup new host as: ",newhost)
-        self.host=newhost
-        update.message.reply_text(text='new host is :'+str(self.host))
+        if chat['id']==os.environ.get('admin_ID'):
+            message = update.message
+            newhost=update.message['text']
+            chat = message['chat']
+            print(str(chat['first_name'])+' '+str(chat['last_name'])+" setup new host as: ",newhost)
+            self.host=newhost
+            update.message.reply_text(text='new host is :'+str(self.host))
+        else :
+            update.message.reply_text(text='Sorry you are not an admin')
 
     def off(self,bot,update):
         print("turn off")
