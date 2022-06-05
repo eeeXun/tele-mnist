@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telbot
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: telbot
+    spec:
+      containers:
+        - name: telbot
+          image: alanjy/teldoc
+          env:
+            - name: tel_token
+              valueFrom:
+                secretKeyRef:
+                  name: tel-secret
+                  key: tel_token
+  selector:
+    matchLabels:
+      app: telbot
