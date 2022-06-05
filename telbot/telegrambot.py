@@ -42,12 +42,15 @@ class telbot:
 
 
     def set_host(self,bot,update):
-        message = update.message
-        newhost=update.message['text']
-        chat = message['chat']
-        print(str(chat['first_name'])+' '+str(chat['last_name'])+" setup new host as: ",newhost)
-        self.host=newhost
-        update.message.reply_text(text='new host is :'+str(self.host))
+        if chat['id']==os.environ.get('admin_ID'):
+            message = update.message
+            newhost=update.message['text']
+            chat = message['chat']
+            print(str(chat['first_name'])+' '+str(chat['last_name'])+" setup new host as: ",newhost)
+            self.host=newhost
+            update.message.reply_text(text='new host is :'+str(self.host))
+        else :
+            update.message.reply_text(text='Sorry you are not an admin')
 
     def off(self,bot,update):
         print("turn off")
